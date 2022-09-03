@@ -11,7 +11,7 @@ function TopNav() {
 
     return (
       <>  
-        <Navbar variant="light" class="navbar">
+        <Navbar variant="light" className="navbar">
           <Container>
             <Nav>
             <Link to="/Calendar"> 

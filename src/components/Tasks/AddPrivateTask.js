@@ -1,14 +1,15 @@
 import React, { useState, useEffect} from 'react';
 import { database } from "../../firebase-config";
-import {doc, collection, onSnapshot, addDoc, query, orderBy, deleteDoc, setDoc} from "firebase/firestore";
+import {doc, collection,updateDoc, onSnapshot, addDoc, query, orderBy, deleteDoc, setDoc} from "firebase/firestore";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import { getAuth } from "firebase/auth";
+import CheckIcon from '@mui/icons-material/Check';
 
 
-function AddPrivateTask() {
+function AddPrivateTask({completed, id}) {
     const auth = getAuth();
     const user = auth.currentUser;
     const [input, setInput] = useState("")
@@ -33,26 +34,35 @@ function AddPrivateTask() {
       if(input) {
         addDoc(collection(docRef, "tasks"), {
           name: input,
-          timestamp: new Date()
+          timestamp: new Date(),
+          completed: false,
         }).catch(err => console.error(err))
       }
     }
   
-//Remove list
+//Remove task
     async function deleteDocument(id) {
-        let request = await deleteDoc(doc(docRef, "tasks", id));
-        console.log(request)
+        await deleteDoc(doc(docRef, "tasks", id));
     }
     
   //Update tasks name 
   async function updateDocument(id) {
     const itemRef = doc(docRef, "tasks", id);
     let name =  prompt("What would you like to update it to?")
-    setDoc(itemRef, {
+    updateDoc(itemRef, {
       name: name,
       timestamp: new Date()
     })
     
+  }
+
+  //Mark completed
+  async function handleChange(id) {
+    const itemRef = doc(docRef, "tasks", id);      
+    updateDoc(itemRef, {
+      completed: true,
+    })
+    alert("Well done!! The task is completed")
   }
 
 //HTML 
@@ -72,6 +82,9 @@ function AddPrivateTask() {
                     <IconButton onClick={() => deleteDocument(task.id)}>
                         <DeleteIcon sx={{ color: "#eaabba" }}/>
                     </IconButton>
+                    <IconButton onClick={() => handleChange(task.id)}>
+                      <CheckIcon/>
+                    </IconButton >
                   </div>
             </div>
               ))}          
@@ -82,7 +95,7 @@ function AddPrivateTask() {
                     type="text" name="item" 
                     className="w-2/3 h-10 p-3 outline-none border border-gray-500"
                     value={input}
-                    placeholder="Add new tasl"
+                    placeholder="Add new task"
                     onChange={e => setInput(e.target.value)}
                     />
                     <IconButton onClick={saveClick} sx={{ color: "#def0f2" }}>

@@ -3,31 +3,32 @@ import { database } from "../../firebase-config";
 import {doc, collection, onSnapshot, addDoc, query, orderBy, deleteDoc, setDoc, updateDoc} from "firebase/firestore";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Icon, IconButton } from '@mui/material';
+import { IconButton } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
+import CheckIcon from '@mui/icons-material/Check';
 
-function AddPublicTask() {
+
+function AddPublicTask({completed, id}) {
   
     const [input, setInput] = useState("")
-    
+
     //Getting Tasks
     const [tasks, setTasks] = useState([])
     useEffect(()=> {
       const q = query(collection(database, "tasks"),  orderBy("timestamp", "desc"));
-  
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        setTasks(snapshot.docs.map(doc => ({...doc.data(), id: doc.id})))
+      const unsubscribe = onSnapshot(q, (snapshot) => {    
+        setTasks(snapshot.docs.map(doc => (
+        {...doc.data(),  id: doc.id})))
         setInput("")
       });
         return () => unsubscribe()
    }, [])   
-  //ENDS HERE 
   
 //Add task
     const saveClick = (e) => {
       e.preventDefault()
       if(input) {
-          addDoc(collection(database, "tasks"), {
+          const docRef =addDoc(collection(database, "tasks"), {
           name: input,
           timestamp: new Date(),
           completed: false,
@@ -36,10 +37,9 @@ function AddPublicTask() {
     }
   
 
-//Remove task
+    //Remove task
     async function deleteDocument(id) {
-        let request = await deleteDoc(doc(database, "tasks", id));
-        console.log(request)
+         deleteDoc(doc(database, "tasks", id));
     }
     
 
@@ -53,10 +53,21 @@ function AddPublicTask() {
       })
     }
 
+    //Mark as completed
+    async function handleChange(id) {
+      const itemRef = doc(database, "tasks", id);
+      updateDoc(itemRef, {
+        completed: true,
+      });
+      alert("Well done!! The task is completed")
+    }
+
+ 
+
 //HTML 
     return (
       <div className="w-full h-screen bg-gray-100 flex items-center justify-center flex-col">
-        <h2 className="text-2xl text-gray-800 font-bold mb-6">Public tasks</h2>
+        <h2 className="text-2xl text-gray-800 font-bold mb-6">Team tasks</h2>
             <div className="w-2/3 border shadow-md p-7">
       
           <div className="w-full ">
@@ -70,9 +81,13 @@ function AddPublicTask() {
                     <IconButton onClick={() => deleteDocument(task.id)}>
                         <DeleteIcon sx={{ color: "#eaabba" }}/>
                     </IconButton >
+                    <IconButton onClick={() => handleChange(task.id)}>
+                      <CheckIcon/>
+                    </IconButton >
                   </div>
             </div>
               ))}          
+        
           </div>
            <div> 
             <form className="flex items-center justify-between mb-7">
