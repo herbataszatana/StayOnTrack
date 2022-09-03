@@ -7,13 +7,12 @@ import { IconButton } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import CheckIcon from '@mui/icons-material/Check';
 
-
-function AddPublicTask({completed, id}) {
+function AddPublicTask() {
   
     const [input, setInput] = useState("")
-
-    //Getting Tasks
     const [tasks, setTasks] = useState([])
+    
+    //Getting Tasks
     useEffect(()=> {
       const q = query(collection(database, "tasks"),  orderBy("timestamp", "desc"));
       const unsubscribe = onSnapshot(q, (snapshot) => {    
@@ -22,13 +21,13 @@ function AddPublicTask({completed, id}) {
         setInput("")
       });
         return () => unsubscribe()
-   }, [])   
+      }, [])   
   
-//Add task
+    //Add task
     const saveClick = (e) => {
       e.preventDefault()
       if(input) {
-          const docRef =addDoc(collection(database, "tasks"), {
+          addDoc(collection(database, "tasks"), {
           name: input,
           timestamp: new Date(),
           completed: false,
@@ -36,7 +35,6 @@ function AddPublicTask({completed, id}) {
       }
     }
   
-
     //Remove task
     async function deleteDocument(id) {
          deleteDoc(doc(database, "tasks", id));
@@ -102,7 +100,7 @@ function AddPublicTask({completed, id}) {
                         <SaveIcon/>
                     </IconButton>
              </form>
-            </div>    
+            </div>   
         </div>
       </div>
     );

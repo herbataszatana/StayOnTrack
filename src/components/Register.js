@@ -13,8 +13,7 @@ const Register = () => {
   const [error, setError] = useState("");
   const [password, setPassword] = useState("");
   const [username, setName] = useState("");
-
-
+  // Sign up as imported from context/useUserAuth
   const { signUp } = useUserAuth();
   let navigate = useNavigate();
 
@@ -31,7 +30,9 @@ const Register = () => {
 // To get user id 
     const auth = getAuth();
     const user = auth.currentUser;
-
+    // After successful athenticatin and registration of new user, just after sigining up 
+    //add new user to the users collection/or create user collection if doesnt exist. Use 
+    //user id as the document id. 
     if(username) {
       setDoc(doc(database, "users", user.uid), {
         name: username,

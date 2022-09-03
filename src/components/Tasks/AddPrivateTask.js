@@ -1,6 +1,6 @@
 import React, { useState, useEffect} from 'react';
 import { database } from "../../firebase-config";
-import {doc, collection,updateDoc, onSnapshot, addDoc, query, orderBy, deleteDoc, setDoc} from "firebase/firestore";
+import {doc, collection,updateDoc, onSnapshot, addDoc, query, orderBy, deleteDoc} from "firebase/firestore";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from '@mui/material';
@@ -9,26 +9,24 @@ import { getAuth } from "firebase/auth";
 import CheckIcon from '@mui/icons-material/Check';
 
 
-function AddPrivateTask({completed, id}) {
+function AddPrivateTask() {
     const auth = getAuth();
     const user = auth.currentUser;
     const [input, setInput] = useState("")
-    const docRef = doc(database, "users", user.uid);
+    const docRef = doc(database, "users", user.uid); // this line creates reference the specific user  
     //Getting Tasks
     const [tasks, setTasks] = useState([])
 
     useEffect(()=> {      
-      const q = query(collection(docRef, "tasks"),  orderBy("timestamp", "desc"));
+      const q = query(collection(docRef, "tasks"),  orderBy("timestamp", "desc")); // here we create query collection for each specific user  
       const unsubscribe = onSnapshot(q, (snapshot) => {
         setTasks(snapshot.docs.map(doc => ({...doc.data(), id: doc.id})))
         setInput("")
       });
         return () => unsubscribe()
    }, [])   
-  //ENDS HERE
   
-  
-//Add list
+//Add task
     const saveClick = (e) => {
       e.preventDefault()
       if(input) {
@@ -53,7 +51,6 @@ function AddPrivateTask({completed, id}) {
       name: name,
       timestamp: new Date()
     })
-    
   }
 
   //Mark completed
