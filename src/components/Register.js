@@ -45,12 +45,12 @@ const Register = () => {
 
   return (
     <>
-      <div className="p-4 box">
-        <h2 className="mb-3">Stay on track register</h2>
+      <div>
+        <h2>Stay on track register</h2>
         {error && <Alert variant="danger">{error}</Alert>}
         <Form onSubmit={handleSubmit}>
 
-          <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Group controlId="formBasicPassword">
             <Form.Control
               type="text"
               placeholder="Name"
@@ -59,7 +59,7 @@ const Register = () => {
             />
           </Form.Group>
 
-          <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Group controlId="formBasicEmail">
             <Form.Control
               type="email"
               placeholder="Email address"
@@ -67,7 +67,7 @@ const Register = () => {
             />
           </Form.Group>
 
-          <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Group controlId="formBasicPassword">
             <Form.Control
               type="password"
               placeholder="Password"
@@ -75,14 +75,14 @@ const Register = () => {
             />
           </Form.Group>
 
-          <div className="d-grid gap-2">
+          <div>
             <Button variant="primary" type="Submit">
               Register
             </Button>
           </div>
         </Form>
       </div>
-      <div className="p-4 box mt-3 text-center">
+      <div>
         Already have an account? <Link to="/">Log In</Link>
       </div>
     </>
